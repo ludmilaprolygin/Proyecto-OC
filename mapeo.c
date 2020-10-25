@@ -135,8 +135,6 @@ extern tValor m_insertar(tMapeo m, tClave c, tValor v){
         }
     }
     if(!encontre){
-        if((m->cantidad_elementos)/(m->longitud_tabla) >= 0.75)
-            re_size(m->cantidad_elementos, &m);
         entrada = (tEntrada) malloc(sizeof(struct entrada));
         if(entrada==NULL)
             exit(MAP_ERROR_MEMORIA);
@@ -144,7 +142,10 @@ extern tValor m_insertar(tMapeo m, tClave c, tValor v){
         entrada->valor = v;
         l_insertar(mi_lista, l_primera(mi_lista), entrada);
         m->cantidad_elementos = m->cantidad_elementos+1;
+        if((float)(m->cantidad_elementos)/(m->longitud_tabla) >= 0.75)
+            re_size(m->cantidad_elementos, &m);
     }
+
     return to_return;
 }
 
@@ -183,14 +184,14 @@ extern void m_eliminar(tMapeo m, tClave c, void (*fEliminarC)(void *), void (*fE
 extern void m_destruir(tMapeo * m, void (*fEliminarC)(void *), void (*fEliminarV)(void *)){
     tMapeo mapeo = (*m);
     int capacidad = mapeo->longitud_tabla;
-    tLista lista_actual;
+    tLista* lista_actual;
     fEliminarClave = fEliminarC;
     fEliminarValor = fEliminarV;
 
     for(int i=0; i<capacidad; i++){
         printf("%i - ", i);
-        lista_actual = *((*m)->tabla_hash+i);
-        l_destruir(lista_actual, &fEliminarEntrada);
+        lista_actual = (tLista*) *((*m)->tabla_hash+i);
+        l_destruir((tLista*) lista_actual, &fEliminarEntrada);
         free(lista_actual);
     }
 

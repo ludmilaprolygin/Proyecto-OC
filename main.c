@@ -55,7 +55,7 @@ void cargar_mapeo(tMapeo m, char* contenido){
     }
 }
 
-void iniciar_programa(char* rutaArchivo, tMapeo m){
+void iniciar_programa(char rutaArchivo[], tMapeo m){
     char *linea = "\0";
     char *puntero = malloc(sizeof(char));
     char *archivo = malloc(sizeof(char));
@@ -71,11 +71,10 @@ void iniciar_programa(char* rutaArchivo, tMapeo m){
     fclose(file);
 
     crear_mapeo(&m, 25, &fHash, &fComparacion);
-
     cargar_mapeo(m, archivo);
 }
 
-int cantApariciones(char* palabra, tMapeo m){
+int cant_apariciones(char* palabra, tMapeo m){
     tValor valor = m_recuperar(m, palabra);
     int toReturn = valor;
     return toReturn;
