@@ -1,0 +1,48 @@
+tLista lista;
+    tPosicion p, pAux;
+    tElemento e1, e2, e3, e4, e5, e6, e7, e;
+    int i1 = 8; int i2 = 9; int i3 = 2; int i4 = 7; int i5 = 10; int i6 = 11; int i7 = 10, i;
+    int longitud;
+
+    e1 = i1; e2 = i2; e3 = i3; e4 = i4; e5 = i5; e6 = i6; e7 = i7;
+
+    crear_lista(&lista);
+
+    p = l_primera(lista);
+    p = l_fin(lista);
+    printf("OK");
+    e = l_recuperar(lista, p);
+    i = e;
+    printf("%i", i);
+
+    l_insertar(lista,p,e1); l_insertar(lista,p,e2); l_insertar(lista,p,e3); l_insertar(lista,p,e4);
+    pAux = l_siguiente(lista, p);
+    l_insertar(lista,p,e5); l_insertar(lista,p,e6); l_insertar(lista,p,e7);
+
+    while(p->siguiente != NULL){
+        printf("%i -> ", l_recuperar(lista,p));
+        p=l_siguiente(lista,p);
+    }
+
+    printf("\n");
+
+    p = l_primera(lista);
+    l_eliminar(lista, pAux, &fEliminar);
+    pAux = l_siguiente(lista, l_siguiente(lista, p));
+    l_eliminar(lista, pAux, &fEliminar);
+
+    while(p->siguiente != NULL){
+        printf("%i -> ", l_recuperar(lista,p));
+        p=l_siguiente(lista,p);
+    }
+
+    printf("\n");
+
+    l_destruir(&lista, &fEliminar);
+
+    while(p->siguiente != NULL){
+        printf("%i -> ", l_recuperar(lista,p));
+        p=l_siguiente(lista,p);
+    }
+
+    printf("\n");
