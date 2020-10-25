@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include "lista.h"
 
-//crear_lista, l_insertar y l_eliminar ya están vistas por Maxi. Dijo que creía que estaban bien, que solo resta testearlo.
-
 /**
  Inicializa una lista vacía.
  Una referencia a la lista creada es referenciada en *L.

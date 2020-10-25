@@ -3,8 +3,6 @@
 #include "lista.h"
 #include "mapeo.h"
 
-//No nos funciona bien el rehash cuando supera el factor de carga
-
 int MAX(int num1, int num2) {
    int toReturn;
    if (num1 > num2)
@@ -16,7 +14,6 @@ int MAX(int num1, int num2) {
 
 void (*fEliminarClave)(void *);
 void (*fEliminarValor)(void *);
-void (*fEliminarLista)(tLista *);
 
 void fEliminarEntrada(tElemento e){
      tEntrada entrada = (tEntrada) e;
@@ -89,7 +86,7 @@ extern void crear_mapeo(tMapeo * m, int ci, int (*fHash)(void *), int (*fCompara
     int capacidad = MAX(ci, 10);
     tLista* lista;
 
-    *m = (tMapeo)malloc(sizeof(struct mapeo));
+    *m = (tMapeo) malloc(sizeof(struct mapeo));
     if(*m==NULL)
         exit(MAP_ERROR_MEMORIA);
 
@@ -186,23 +183,18 @@ extern void m_eliminar(tMapeo m, tClave c, void (*fEliminarC)(void *), void (*fE
 extern void m_destruir(tMapeo * m, void (*fEliminarC)(void *), void (*fEliminarV)(void *)){
     tMapeo mapeo = (*m);
     int capacidad = mapeo->longitud_tabla;
-    int bucket;
     tLista lista_actual;
     fEliminarClave = fEliminarC;
     fEliminarValor = fEliminarV;
 
-    /*
     for(int i=0; i<capacidad; i++){
+        printf("%i - ", i);
         lista_actual = *((*m)->tabla_hash+i);
-        l_destruir(&lista_actual, &fEliminarEntrada);
+        l_destruir(lista_actual, &fEliminarEntrada);
         free(lista_actual);
     }
-    */
-    //Y si solo destruimos tabla_hash? No entiendo como parametrizar la funcion para que destruya la lista una a una.
 
-    //l_destruir(*(*m)->tabla_hash, &fEliminarLista);
-
-    free(m);
+    free(*m);
     (*m)=NULL;
 }
 

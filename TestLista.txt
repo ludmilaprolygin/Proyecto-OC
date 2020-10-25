@@ -1,4 +1,4 @@
-tLista lista;
+    tLista lista;
     tPosicion p, pAux;
     tElemento e1, e2, e3, e4, e5, e6, e7, e;
     int i1 = 8; int i2 = 9; int i3 = 2; int i4 = 7; int i5 = 10; int i6 = 11; int i7 = 10, i;
