@@ -36,19 +36,19 @@ void fEliminarC(tClave clave){
     free(clave);
 }
 
-int cant_apariciones(char* palabra, tMapeo m){
-    tValor valor = m_recuperar(m, palabra);
+int cant_apariciones(char* palabra){
+    tValor valor = m_recuperar(mapeo, palabra);
     int toReturn = valor;
     return toReturn;
 }
 
-void salir(tMapeo m){
-    m_destruir(&m, &fEliminarC, &fEliminarV);
+void salir(){
+    m_destruir(&mapeo, &fEliminarC, &fEliminarV);
 }
 
-void cargar_archivo(char f1[]){
+void cargar_archivo(char f[]){
     char linea[100]="\0";
-    FILE *file = fopen(f1, "r");
+    FILE *file = fopen(f, "r");
     char *puntero;
     char *contenido_separado;
     tValor valor;
@@ -56,39 +56,75 @@ void cargar_archivo(char f1[]){
     char delimitadores[] = ", ¿?¡!\n\r\0";
 
     if(file==NULL){
-        printf("Ocurrió un error al intentar abrir el archivo");
+        printf("Ocurrió un error al intentar abrir el archivo.");
         exit(ARCH_ERROR_APERTURA);
     }
 
-    crear_mapeo(&mapeo, 25, &fHash, &fComparacion);
+    crear_mapeo(&mapeo, 20, &fHash, &fComparacion);
 
     while(puntero!=NULL){
         puntero = fgets(linea,100,file);
         contenido_separado = strtok(puntero, delimitadores);
         while(contenido_separado!=NULL){
-            printf(" [%s] ", contenido_separado);
-            cant_palabras = (int) m_recuperar(mapeo, contenido_separado);
-            valor = cant_palabras+1;
-            m_insertar(mapeo, contenido_separado, valor);
-            printf("%i \n", cant_palabras);
-            contenido_separado = strtok(NULL, delimitadores);
-        }
+    printf("Contenido separado: [%s] ", contenido_separado);
+    cant_palabras = (int) m_recuperar(mapeo, contenido_separado);
+    valor = cant_palabras++;
+    m_insertar(mapeo, contenido_separado, valor);
+    printf("%i \n", cant_palabras);
+    contenido_separado = strtok(NULL, delimitadores);
+}
     }
 
     fclose(file);
     printf("Cantidad de palabras: %i", mapeo->cantidad_elementos);
 }
 
+void evaluador(char ruta_archivo[]){
+    int operacion;
+    int terminar = 0;
+    char* buffer = NULL;
+    int cantidad_apariciones;
+
+    cargar_archivo(ruta_archivo);
+
+    while(terminar==0){
+        printf("Ingrese la operacion a realizar\n");
+        printf("1: cantidad de apariciones, 2: salir >> ");
+        scanf("%1i", &operacion);
+        fflush(stdin);
+
+        if(operacion!=1 || operacion!=2){
+            printf("Ocurrio un error al intentar ejecutar el programa.");
+            exit(ERROR_INVOCACION);
+        }
+        if(operacion==1){
+            printf("Ingrese la palabra que desea contabilizar >> ");
+            scanf("%s", buffer);
+            fflush(stdin);
+            cantidad_apariciones = cant_apariciones(buffer);
+            printf("La palabra %s aparece %i en el archivo.", buffer, cantidad_apariciones);
+        }
+        else{
+            salir();
+            terminar = 1;
+        }
+    }
+}
+
+
 int main()
 {
-    /*
-    char ruta_leer[250];
+
+    char buffer[250];
     printf("Ingrese la ruta del archivo que desea abrir\n");
-    scanf("%s", &ruta_leer);
+    scanf("%s", &buffer);
+    fflush(stdin);
+    printf("\n");
 
-    cargar_archivo(ruta_leer);
-    */
+    cargar_archivo(buffer);
 
+
+    /*
     int longitud_mapeo = 10;
 
     tMapeo m;
@@ -224,8 +260,10 @@ int main()
     else
         printf("veinte, no ta\n");
 
-    printf("Cantidad a eliminar: %i\n", m->longitud_tabla);
+    printf("Longitud tabla: %i\n", m->longitud_tabla);
+    printf("Cantidad elementos: %i\n", m->cantidad_elementos);
     m_destruir(&m, &fEliminarC, &fEliminarV);
+    */
 
     return 0;
 }

@@ -65,6 +65,7 @@ void re_size(int longitud, tMapeo *m){
     }
 
     for(int i=0; i<(*m)->longitud_tabla; i++){
+        printf("\nlista: %i ", i);
         lista_actual = (*m)->tabla_hash[i];
         posicion_actual_lista = l_primera(lista_actual);
         posicion_fin_lista = l_fin(lista_actual);
@@ -74,7 +75,7 @@ void re_size(int longitud, tMapeo *m){
             bucket = (*m)->hash_code(clave) % nuevo_size;
 
             char* print = clave;
-            printf("clave: [%s], bucket: [%i]\n", print, bucket);
+            printf("clave: [%s], bucket: [%i] - ", print, bucket);
 
             l_insertar(lista[bucket], l_primera(lista[bucket]), entrada);
             posicion_actual_lista = l_siguiente(lista_actual, posicion_actual_lista);
