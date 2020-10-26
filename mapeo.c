@@ -51,6 +51,7 @@ int proximo_primo(int numero) {
 }
 
 void re_size(int longitud, tMapeo *m){
+    printf("RESIZE \n");
     int nuevo_size = proximo_primo(2*(*m)->longitud_tabla);
     int bucket;
     tEntrada entrada;
@@ -64,13 +65,17 @@ void re_size(int longitud, tMapeo *m){
     }
 
     for(int i=0; i<(*m)->longitud_tabla; i++){
-        lista_actual = *((*m)->tabla_hash+bucket);
+        lista_actual = (*m)->tabla_hash[i];
         posicion_actual_lista = l_primera(lista_actual);
         posicion_fin_lista = l_fin(lista_actual);
         while(posicion_actual_lista!=posicion_fin_lista){
             entrada = l_recuperar(lista_actual, posicion_actual_lista);
             clave = entrada->clave;
-            bucket = (*m)->hash_code(clave) % (*m)->longitud_tabla;
+            bucket = (*m)->hash_code(clave) % nuevo_size;
+
+            char* print = clave;
+            printf("clave: [%s], bucket: [%i]\n", print, bucket);
+
             l_insertar(lista[bucket], l_primera(lista[bucket]), entrada);
             posicion_actual_lista = l_siguiente(lista_actual, posicion_actual_lista);
         }
@@ -128,7 +133,11 @@ extern tValor m_insertar(tMapeo m, tClave c, tValor v){
     pos_actual = l_primera(mi_lista);//Tengo que recorrer la lista para observar si existe una entrada con clave C.
     pos_fin = l_fin(mi_lista);
 
-    while(!encontre && pos_actual!=pos_fin){ //Recorre la lista en búsqueda de una entrada cuya clave sea C.
+    char* printC = c;
+    int printV = v;
+    printf("longitud tabla: [%i], clave: [%s], valor: [%i], bucket: [%i]\n", m->longitud_tabla, printC, printV, bucket);
+
+    while(encontre==0 && pos_actual!=pos_fin){ //Recorre la lista en búsqueda de una entrada cuya clave sea C.
         entrada = (tEntrada) l_recuperar(mi_lista, pos_actual);
         if (m->comparador(c, entrada->clave) == 0){ //Las claves son iguales
             encontre = 1;
@@ -139,7 +148,7 @@ extern tValor m_insertar(tMapeo m, tClave c, tValor v){
             pos_actual = l_siguiente(mi_lista, pos_actual);
         }
     }
-    if(!encontre){
+    if(encontre==0){
         entrada = (tEntrada) malloc(sizeof(struct entrada));
         if(entrada==NULL)
             exit(MAP_ERROR_MEMORIA);

@@ -3,6 +3,7 @@
 #include <string.h>
 #include "lista.h"
 #include "mapeo.h"
+#include "math.h"
 
 #define ARCH_ERROR_APERTURA -1
 #define ERROR_INVOCACION -2
@@ -22,7 +23,7 @@ int fHash(void* s){
     for (int i = 0; i < strlen(str); i++) {
         hash = 31 * hash + str[i];
     }
-    return hash;
+    return abs(hash);
 }
 
 void fEliminarV(tValor valor){
@@ -88,7 +89,7 @@ int main()
     cargar_archivo(ruta_leer);
     */
 
-     int longitud_mapeo = 10;
+    int longitud_mapeo = 10;
 
     tMapeo m;
   	crear_mapeo(&m, longitud_mapeo, &fHash, &fComparacion);
@@ -199,10 +200,21 @@ int main()
   	printf("%i - ", m->cantidad_elementos);
   	printf("%i\n", m->longitud_tabla);
 
+  	s1 = "uno";
+  	clave = s1;
+  	i = 200;
+  	valor = i;
+  	m_insertar(m, clave, valor);
+  	printf("%i - ", m->cantidad_elementos);
+  	printf("%i\n", m->longitud_tabla);
+
     valor = m_recuperar(m, "quince");
     i = valor;
     printf("quince, %i\n", valor);
 
+    valor = m_recuperar(m, "uno");
+    i = valor;
+    printf("uno, %i\n", valor);
 
     valor = m_recuperar(m, "veinte");
     if(valor!=NULL){
@@ -214,8 +226,6 @@ int main()
 
     printf("Cantidad a eliminar: %i\n", m->longitud_tabla);
     m_destruir(&m, &fEliminarC, &fEliminarV);
-
-    printf("Listo\n");
 
     return 0;
 }
