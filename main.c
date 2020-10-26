@@ -50,7 +50,7 @@ void cargar_archivo(char f[]){
     char linea[100]="\0";
     FILE *file = fopen(f, "r");
     char *puntero;
-    char *contenido_separado;
+    char *contenido_separado, *palabra;
     tValor valor;
     int cant_palabras;
     char delimitadores[] = ", ¿?¡!\n\r\0";
@@ -60,7 +60,7 @@ void cargar_archivo(char f[]){
         exit(ARCH_ERROR_APERTURA);
     }
 
-    crear_mapeo(&mapeo, 100, &fHash, &fComparacion);
+    crear_mapeo(&mapeo, 10, &fHash, &fComparacion);
 
     int bucket;
 
@@ -69,12 +69,13 @@ void cargar_archivo(char f[]){
         printf("%s", puntero);
         contenido_separado = strtok(puntero, delimitadores);
         while(contenido_separado!=NULL){
-            printf("Contenido separado: [%s] ", contenido_separado);
-            cant_palabras = (int) m_recuperar(mapeo, contenido_separado);
-            bucket = (fHash(contenido_separado) % mapeo->longitud_tabla);
+            palabra = strdup(contenido_separado);
+            printf("Contenido separado: [%s] ", palabra);
+            cant_palabras = (int) m_recuperar(mapeo, palabra);
+            bucket = (fHash(palabra) % mapeo->longitud_tabla);
             printf("%i ", bucket);
             valor = (cant_palabras+1);
-            m_insertar(mapeo, contenido_separado, valor);
+            m_insertar(mapeo, palabra, valor);
             printf("%i \n", cant_palabras);
             contenido_separado = strtok(NULL, delimitadores);
         }
@@ -118,7 +119,6 @@ void evaluador(char ruta_archivo[]){
 
 int main()
 {
-
     char buffer[250];
     printf("Ingrese la ruta del archivo que desea abrir\n");
     scanf("%s", &buffer);
@@ -126,157 +126,6 @@ int main()
     printf("\n");
 
     cargar_archivo(buffer);
-
-    tLista lista = mapeo->tabla_hash[70];
-    tPosicion p = l_primera(lista);
-    tEntrada e;
-
-    while(p->siguiente != NULL){
-        e = (tEntrada) l_recuperar(lista,p);
-        printf("%i -> ", e->clave);
-        p=l_siguiente(lista,p);
-    }
-
-/*
-    int longitud_mapeo = 10;
-
-    tMapeo m;
-  	crear_mapeo(&m, longitud_mapeo, &fHash, &fComparacion);
-
-
-  	tValor valor;
-  	tClave clave;
-  	tElemento elemento;
-  	tEntrada entrada;
-
-  	char* s1 = "uno";
-  	void* i = 100;
-
-  	tLista lista_actual;
-  	tPosicion posicion;
-
-  	clave = s1;
-  	valor = i;
-
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "dos";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "tres";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "cuatro";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "cinco";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "seis";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "siete";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "ocho";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "nueve";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "diez";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "once";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "doce";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "trece";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "catorce";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "quince";
-  	clave = s1;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-  	s1 = "uno";
-  	clave = s1;
-  	i = 200;
-  	valor = i;
-  	m_insertar(m, clave, valor);
-  	printf("%i - ", m->cantidad_elementos);
-  	printf("%i\n", m->longitud_tabla);
-
-    valor = m_recuperar(m, "quince");
-    i = valor;
-    printf("quince, %i\n", valor);
-
-    valor = m_recuperar(m, "uno");
-    i = valor;
-    printf("uno, %i\n", valor);
-
-    valor = m_recuperar(m, "veinte");
-    if(valor!=NULL){
-        i = valor;
-        printf("veinte, %i\n", valor);
-    }
-    else
-        printf("veinte, no ta\n");
-
-    printf("Longitud tabla: %i\n", m->longitud_tabla);
-    printf("Cantidad elementos: %i\n", m->cantidad_elementos);
-    m_destruir(&m, &fEliminarC, &fEliminarV);
-*/
 
     return 0;
 }
