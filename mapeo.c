@@ -51,7 +51,7 @@ int proximo_primo(int numero) {
 }
 
 void re_size(int longitud, tMapeo *m){
-    printf("RESIZE \n");
+    printf("\nRESIZE \n");
     int nuevo_size = proximo_primo(2*(*m)->longitud_tabla);
     int bucket;
     tEntrada entrada;

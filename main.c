@@ -60,19 +60,24 @@ void cargar_archivo(char f[]){
         exit(ARCH_ERROR_APERTURA);
     }
 
-    crear_mapeo(&mapeo, 20, &fHash, &fComparacion);
+    crear_mapeo(&mapeo, 100, &fHash, &fComparacion);
+
+    int bucket;
 
     while(puntero!=NULL){
         puntero = fgets(linea,100,file);
+        printf("%s", puntero);
         contenido_separado = strtok(puntero, delimitadores);
         while(contenido_separado!=NULL){
-    printf("Contenido separado: [%s] ", contenido_separado);
-    cant_palabras = (int) m_recuperar(mapeo, contenido_separado);
-    valor = cant_palabras++;
-    m_insertar(mapeo, contenido_separado, valor);
-    printf("%i \n", cant_palabras);
-    contenido_separado = strtok(NULL, delimitadores);
-}
+            printf("Contenido separado: [%s] ", contenido_separado);
+            cant_palabras = (int) m_recuperar(mapeo, contenido_separado);
+            bucket = (fHash(contenido_separado) % mapeo->longitud_tabla);
+            printf("%i ", bucket);
+            valor = (cant_palabras+1);
+            m_insertar(mapeo, contenido_separado, valor);
+            printf("%i \n", cant_palabras);
+            contenido_separado = strtok(NULL, delimitadores);
+        }
     }
 
     fclose(file);
@@ -111,7 +116,6 @@ void evaluador(char ruta_archivo[]){
     }
 }
 
-
 int main()
 {
 
@@ -123,8 +127,17 @@ int main()
 
     cargar_archivo(buffer);
 
+    tLista lista = mapeo->tabla_hash[70];
+    tPosicion p = l_primera(lista);
+    tEntrada e;
 
-    /*
+    while(p->siguiente != NULL){
+        e = (tEntrada) l_recuperar(lista,p);
+        printf("%i -> ", e->clave);
+        p=l_siguiente(lista,p);
+    }
+
+/*
     int longitud_mapeo = 10;
 
     tMapeo m;
@@ -263,7 +276,7 @@ int main()
     printf("Longitud tabla: %i\n", m->longitud_tabla);
     printf("Cantidad elementos: %i\n", m->cantidad_elementos);
     m_destruir(&m, &fEliminarC, &fEliminarV);
-    */
+*/
 
     return 0;
 }
