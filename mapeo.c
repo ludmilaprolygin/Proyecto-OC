@@ -23,6 +23,11 @@ void fEliminarEntrada(tElemento e){
      free(entrada);
 }
 
+void fEliminar(tElemento elemento){
+    elemento=NULL;
+    free(elemento);
+}
+
 int es_primo(int numero) {
     int es_primo = 1;
 	int divisor = 2;
@@ -189,11 +194,12 @@ extern void m_destruir(tMapeo * m, void (*fEliminarC)(void *), void (*fEliminarV
     fEliminarValor = fEliminarV;
 
     for(int i=0; i<capacidad; i++){
-        printf("%i - ", i);
         lista_actual = (tLista*) *((*m)->tabla_hash+i);
         l_destruir((tLista*) lista_actual, &fEliminarEntrada);
         free(lista_actual);
     }
+
+    //l_destruir((*m)->tabla_hash, &fEliminar); ?????
 
     free(*m);
     (*m)=NULL;
