@@ -7,10 +7,13 @@
  Una referencia a la lista creada es referenciada en *L.
  Finaliza indicando LST_ERROR_MEMORIA si no es posible reservar memoria correspondientemente.
 **/
-extern void crear_lista(tLista * l){
+extern void crear_lista(tLista * l)
+{
     *l = (tLista)malloc(sizeof(struct celda));
+
     if(*l==NULL)
         exit(LST_ERROR_MEMORIA);
+
     (*l)->elemento = NULL;
     (*l)->siguiente = NULL;
 }
@@ -21,19 +24,25 @@ extern void crear_lista(tLista * l){
  L' = A,B,E,C,D.
  Finaliza indicando LST_ERROR_MEMORIA si no es posible reservar memoria correspondientemente.
 **/
-extern void l_insertar(tLista l, tPosicion p, tElemento e){
+extern void l_insertar(tLista l, tPosicion p, tElemento e)
+{
     struct celda* nueva_celda;
     nueva_celda = (struct celda*) malloc(sizeof(struct celda));
+
     if(nueva_celda == NULL)
         exit(LST_ERROR_MEMORIA);
-    if (l->siguiente == NULL){
+
+    if (l->siguiente == NULL) //Si la lista es vacía, inserta en la primer posición.
+    {
         l->siguiente = nueva_celda;
         nueva_celda->siguiente = NULL;
     }
-    else{
+    else
+    {
         nueva_celda->siguiente = p->siguiente;
         p->siguiente = nueva_celda;
     }
+
     nueva_celda->elemento = e;
 }
 
@@ -42,32 +51,40 @@ extern void l_insertar(tLista l, tPosicion p, tElemento e){
  El elemento almacenado en la posición P es eliminado mediante la función fEliminar.
  Finaliza indicando LST_POSICION_INVALIDA si P es fin(L).
 **/
-extern void l_eliminar(tLista l, tPosicion p, void (*fEliminar)(tElemento)){
-    tPosicion punteroAux;
+extern void l_eliminar(tLista l, tPosicion p, void (*fEliminar)(tElemento))
+{
+    tPosicion pos_aux;
+
     if(p->siguiente == NULL)
         exit(LST_POSICION_INVALIDA);
-    fEliminar(p->siguiente->elemento); //Si lo borramos acá anda joyita
-    punteroAux = p->siguiente->siguiente;
+
+    fEliminar(p->siguiente->elemento);
+    pos_aux = p->siguiente->siguiente; //Se guarda la referencia al siguiente de la posición para liberar el espacio en memoria.
     free(p->siguiente);
-    if(punteroAux == NULL)
+
+    if(pos_aux == NULL)
         p->siguiente = NULL;
     else
-        p->siguiente = punteroAux;
+        p->siguiente = pos_aux;
 }
 
 /**
  Destruye la lista L, elimininando cada una de sus celdas.
  Los elementos almacenados en las celdas son eliminados mediante la función fEliminar.
 **/
-extern void l_destruir(tLista * l, void (*fEliminar)(tElemento)){
-    tPosicion posActual = (*l);
-    tPosicion posAuxiliar;
-    while(posActual!=NULL){
-        fEliminar(posActual->elemento);
-        posAuxiliar = posActual;
-        posActual = posActual->siguiente;
-        free(posAuxiliar);
+extern void l_destruir(tLista * l, void (*fEliminar)(tElemento))
+{
+    tPosicion pos_actual = (*l);
+    tPosicion pos_aux;
+
+    while(pos_actual!=NULL)
+    {
+        fEliminar(pos_actual->elemento);
+        pos_aux = pos_actual;
+        pos_actual = pos_actual->siguiente;
+        free(pos_aux);
     }
+
     (*l) = NULL;
 }
 
@@ -75,9 +92,11 @@ extern void l_destruir(tLista * l, void (*fEliminar)(tElemento)){
  Recupera y retorna el elemento en la posición P.
  Finaliza indicando LST_POSICION_INVALIDA si P es fin(L).
 **/
-extern tElemento l_recuperar(tLista l, tPosicion p){
-    if(p->siguiente == NULL) //Sería fin
+extern tElemento l_recuperar(tLista l, tPosicion p)
+{
+    if(p->siguiente == NULL)
         exit(LST_POSICION_INVALIDA);
+
     return p->siguiente->elemento;
 }
 
@@ -85,7 +104,8 @@ extern tElemento l_recuperar(tLista l, tPosicion p){
  Recupera y retorna la primera posición de L.
  Si L es vacía, primera(L) = ultima(L) = fin(L).
 **/
-extern tPosicion l_primera(tLista l){
+extern tPosicion l_primera(tLista l)
+{
     return l;
 }
 
@@ -93,9 +113,11 @@ extern tPosicion l_primera(tLista l){
  Recupera y retorna la posición siguiente a P en L.
  Finaliza indicando LST_NO_EXISTE_SIGUIENTE si P es fin(L).
 **/
-extern tPosicion l_siguiente(tLista l, tPosicion p){
-    if(p->siguiente == NULL) //Sería fin
+extern tPosicion l_siguiente(tLista l, tPosicion p)
+{
+    if(p->siguiente == NULL)
         exit(LST_NO_EXISTE_SIGUIENTE);
+
     return p->siguiente;
 }
 
@@ -103,29 +125,37 @@ extern tPosicion l_siguiente(tLista l, tPosicion p){
  Recupera y retorna la posición anterior a P en L.
  Finaliza indicando LST_NO_EXISTE_ANTERIOR si P es primera(L).
 **/
-extern tPosicion l_anterior(tLista l, tPosicion p){
+extern tPosicion l_anterior(tLista l, tPosicion p)
+{
     int encontre=0;
     tPosicion puntero;
+
     if(p==l)
         exit(LST_NO_EXISTE_ANTERIOR);
+
     puntero = l;
-    while(puntero->siguiente != NULL && (encontre==0)){
-        if(puntero->siguiente->siguiente == p )
+    while(puntero->siguiente != NULL && !encontre)
+    {
+        if(puntero->siguiente->siguiente == p ) //Este control se hace de esta manera por la noción de posición indirecta.
             encontre = 1;
         puntero = puntero->siguiente;
     }
-    return puntero; //puntero->siguiente capaz sea esto, testear
+
+    return puntero;
 }
 
 /**
  Recupera y retorna la última posición de L.
  Si L es vacía, primera(L) = ultima(L) = fin(L).
 **/
-extern tPosicion l_ultima(tLista l){
+extern tPosicion l_ultima(tLista l)
+{
     tPosicion puntero = l;
+
     if (l->siguiente != NULL)
         while(puntero->siguiente->siguiente != NULL)
             puntero = puntero->siguiente;
+
     return puntero;
 }
 
@@ -133,8 +163,10 @@ extern tPosicion l_ultima(tLista l){
  Recupera y retorna la posición fin de L.
  Si L es vacía, primera(L) = ultima(L) = fin(L).
 **/
-extern tPosicion l_fin(tLista l){
+extern tPosicion l_fin(tLista l)
+{
     tPosicion puntero = l;
+
     while(l->siguiente!=NULL && puntero->siguiente!=NULL)
         puntero = puntero->siguiente;
     return puntero;
@@ -143,15 +175,20 @@ extern tPosicion l_fin(tLista l){
 /**
  Retorna la longitud actual de la lista.
 **/
-extern int l_longitud(tLista l){
+extern int l_longitud(tLista l)
+{
     tPosicion puntero;
-    int longitud=0;
-    if(l->siguiente != NULL){
+    int longitud = 0;
+
+    if(l->siguiente != NULL)
+    {
         puntero = l;
-        while(puntero->siguiente != NULL){
-            longitud= longitud+1;
+        while(puntero->siguiente != NULL)
+        {
+            longitud = longitud+1;
             puntero = puntero->siguiente;
         }
     }
+
     return longitud;
 }

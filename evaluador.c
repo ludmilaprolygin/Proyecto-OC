@@ -15,7 +15,6 @@ tMapeo mapeo;
     Compara dos elementos parametrizados.
     Devuelve 0 si son iguales, cualquier otro número caso contrario.
 **/
-
 int fComparacion(void* s1, void* s2)
 {
     char *string1 = s1;
@@ -152,6 +151,8 @@ int evaluador(char ruta_archivo[])
                 terminar = 1;
             }
         }
+
+        operacion = 0;
     }
     return 0;
 }
