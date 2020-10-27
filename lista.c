@@ -59,7 +59,7 @@ extern void l_eliminar(tLista l, tPosicion p, void (*fEliminar)(tElemento))
         exit(LST_POSICION_INVALIDA);
 
     fEliminar(p->siguiente->elemento);
-    pos_aux = p->siguiente->siguiente; //Se guarda la referencia al siguiente de la posición para liberar el espacio en memoria.
+    pos_aux = p->siguiente->siguiente; //Se guarda el puntero al siguiente de la posición para liberar el espacio en memoria.
     free(p->siguiente);
 
     if(pos_aux == NULL)

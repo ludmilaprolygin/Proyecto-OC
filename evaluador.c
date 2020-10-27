@@ -61,8 +61,8 @@ int cant_apariciones(char* palabra)
     char *palabra_aux = strdup(palabra);
     tClave clave = palabra_aux;
     tValor valor = m_recuperar(mapeo, clave);
-    int toReturn = valor;
-    return toReturn;
+    int to_return = (intptr_t) valor;
+    return to_return;
 }
 
 /**
@@ -76,12 +76,12 @@ void salir()
 /**
     Lee el archivo y carga sus palabras al mapeo.
 **/
-void cargar_archivo(char f[])
+void cargar_archivo(char *f)
 {
     char linea[100]="\0";
     char delimitadores[] = ", ¿?¡!\n\r\0";
-    char *contenido_separado, *palabra, *puntero;
-    int cant_palabras;
+    char *contenido_separado, *palabra, *puntero = (char*)malloc(100);
+    intptr_t cant_palabras;
     tValor valor;
     FILE *file = fopen(f, "r");
 
@@ -100,25 +100,26 @@ void cargar_archivo(char f[])
         while(contenido_separado!=NULL)
         {
             palabra = strdup(contenido_separado);
-            cant_palabras = (int) m_recuperar(mapeo, palabra);
-            valor = (cant_palabras+1);
+            cant_palabras = (intptr_t) m_recuperar(mapeo, palabra);
+            valor = (tValor) ++cant_palabras;
             m_insertar(mapeo, palabra, valor); //Actualiza la cantidad de apariciones de una palabra en el archivo.
             contenido_separado = strtok(NULL, delimitadores);
         }
     }
 
+    free(puntero);
     fclose(file);
 }
 
 /**
-    Recorrel archivo parametrizado y computa la cantidad de apariciones de las palabras que lo componen.
+    Recorre el archivo parametrizado y computa la cantidad de apariciones de las palabras que lo componen.
     Ofrece un menú de operaciones que permita calcular la cantidad de apariciones de una palabra o salir del programa.
     Finaliza con ARCH_ERROR_APERTURA en caso de error al intentar la apertura del archivo parametrizado,
         ERROR_INVOCACION en caso de error ante la invocación del programa o 0 en caso de una finalización exitosa.
 **/
-int evaluador(char ruta_archivo[])
+void evaluador(char *ruta_archivo)
 {
-    char buffer[250];
+    char *buffer;
     int operacion, cantidad_apariciones, terminar=0;
 
     cargar_archivo(ruta_archivo);
@@ -140,9 +141,16 @@ int evaluador(char ruta_archivo[])
             if(operacion==1)
             {
                 printf("Ingrese la palabra que desea contabilizar >> ");
-                scanf("%s", &buffer);
+                buffer = (char*)malloc(250);
+                scanf("%s", buffer);
                 cantidad_apariciones = cant_apariciones(buffer);
-                printf("\nLa palabra %s aparece %i veces en el archivo.", buffer, cantidad_apariciones);
+                if(cantidad_apariciones>1)
+                    printf("\nLa palabra %s aparece %i veces en el archivo.\n", buffer, cantidad_apariciones);
+                else if(cantidad_apariciones==1)
+                    printf("\nLa palabra %s aparece 1 vez en el archivo.\n", buffer);
+                else
+                    printf("\nLa palabra %s no aparece en el archivo.\n", buffer);
+                free(buffer);
                 fflush(stdin);
             }
             else
@@ -154,10 +162,11 @@ int evaluador(char ruta_archivo[])
 
         operacion = 0;
     }
-    return 0;
 }
 
-int main()
+int main(int argc, char** argv)
 {
-    evaluador("ArchivoPrueba.txt");
+    evaluador(*(argv+1));
+
+    return 0;
 }

@@ -109,7 +109,7 @@ void re_size(int longitud, tMapeo *m)
             entrada = l_recuperar(lista_actual, posicion_actual_lista);
             clave = entrada->clave;
             bucket = (*m)->hash_code(clave) % nuevo_size;
-            l_insertar(lista[bucket], l_primera(lista[bucket]), entrada); //Almacena en la nueva tabla, los datos anteriores.
+            l_insertar(lista[bucket], l_primera(lista[bucket]), entrada); //Almacena en la nueva tabla los datos anteriores.
             posicion_actual_lista = l_siguiente(lista_actual, posicion_actual_lista);
         }
     }
